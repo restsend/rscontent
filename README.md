@@ -18,7 +18,8 @@ example/
 ```
 ## How to run
 ```shell
-go install github.com/restsend/rscontent
-go run . -r example
+go install github.com/restsend/rscontent@latest
+
+rscontent -r example
 ```
 

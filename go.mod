@@ -6,6 +6,7 @@ require (
 	github.com/flosch/pongo2/v6 v6.0.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/gomarkdown/markdown v0.0.0-20221013030248-663e2500819c
+	github.com/sevlyar/go-daemon v0.1.6
 	github.com/stretchr/testify v1.8.1
 )
 
@@ -17,6 +18,7 @@ require (
 	github.com/go-playground/validator/v10 v10.10.0 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
