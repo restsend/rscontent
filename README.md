@@ -2,6 +2,7 @@ Static Markdown Server
 =====
 Markdown + Django Template server
 
+
 ## Directory layout
 ```shell
 
@@ -17,6 +18,7 @@ example/
 ```
 ## How to run
 ```shell
+go install github.com/restsend/rscontent
 go run . -r example
 ```
 

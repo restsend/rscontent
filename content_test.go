@@ -1,4 +1,4 @@
-package rscontent
+package main
 
 import (
 	"net/http"
@@ -54,7 +54,7 @@ func TestContentException(t *testing.T) {
 		os.RemoveAll("/tmp/404.md")
 	}()
 	os.WriteFile("/tmp/404.md", []byte("4o4"), 0666)
-	m.loaders = append(m.loaders, http.Dir("/tmp/"))
+	m.AddLoader(http.Dir("/tmp/"))
 	{
 		d, err := m.Get("/index.html", nil)
 		assert.Nil(t, err)
@@ -69,7 +69,7 @@ func TestContentOpen(t *testing.T) {
 	}()
 	os.WriteFile("/tmp/index.md", []byte("index data"), 0666)
 	os.WriteFile("/tmp/index.css", []byte(".index{}"), 0666)
-	m.loaders = append(m.loaders, http.Dir("/tmp/"))
+	m.AddLoader(http.Dir("/tmp/"))
 	{
 		d, err := m.Get("/", nil)
 		assert.Nil(t, err)
@@ -100,7 +100,7 @@ func TestContentRender(t *testing.T) {
 	os.WriteFile("/tmp/index.html", []byte("<html>{{content|safe}}</html>"), 0666)
 	os.WriteFile("/tmp/page.html", []byte("<main>{{content|safe}}</main>"), 0666)
 	os.WriteFile("/tmp/pricing.html", []byte("<pricing>{{content|safe}}</pricing>"), 0666)
-	m.loaders = append(m.loaders, http.Dir("/tmp/"))
+	m.AddLoader(http.Dir("/tmp/"))
 	m.Sets = pongo2.NewSet("unittest", pongo2.MustNewLocalFileSystemLoader("/tmp"))
 	{
 		d, err := m.Get("/", nil)
@@ -117,4 +117,13 @@ func TestContentRender(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, string(d), "<pricing><h2>pricing</h2>\n</pricing>")
 	}
+}
+
+func TestMergeContext(t *testing.T) {
+	c := MarkdownContent{}
+	vals := map[string]interface{}{
+		"title": "hello",
+	}
+	c.MergeContext(vals)
+	assert.Contains(t, c.ctx, "title")
 }

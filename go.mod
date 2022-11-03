@@ -1,4 +1,4 @@
-module restsend/rscontent
+module github.com/restsend/rscontent
 
 go 1.19
 

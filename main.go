@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"restsend/rscontent"
 	"strings"
 
 	"github.com/flosch/pongo2/v6"
@@ -21,9 +20,8 @@ var fileMode os.FileMode = 0666
 var serverAddr string
 var rootDir string
 var logFile string
-var prefix string
 var err error
-var m *rscontent.ContentManager
+var m *ContentManager
 
 func LoadContext() map[string]interface{} {
 	fname := filepath.Join(rootDir, "config.json")
@@ -56,12 +54,10 @@ func HandleMarkdownContent() gin.HandlerFunc {
 func main() {
 
 	flag.StringVar(&rootDir, "r", ".", "root dir")
-	flag.StringVar(&prefix, "p", "/", "prefix ")
 	flag.StringVar(&serverAddr, "s", ":8080", "listen addr")
 	flag.StringVar(&logFile, "l", "", "log file")
 
 	flag.Parse()
-	gin.DisableConsoleColor()
 
 	var lw io.Writer
 	if logFile != "" {
@@ -83,7 +79,7 @@ func main() {
 
 	r.StaticFS("/static", http.Dir(staticDir))
 
-	m = &rscontent.ContentManager{}
+	m = &ContentManager{}
 	m.AddLoader(http.Dir(contentDir))
 	m.Sets = pongo2.NewSet("rscontent", pongo2.MustNewLocalFileSystemLoader(templateDir))
 
