@@ -21,6 +21,7 @@ type GetExceptionContent func(name string, status int) string
 
 type ContentManager struct {
 	loaders             []http.FileSystem
+	FallbackTemplate    string
 	Sets                *pongo2.TemplateSet
 	GetContext          GetContext
 	GetExceptionContent GetExceptionContent
@@ -36,10 +37,11 @@ type BlockJson struct {
 }
 
 const (
-	jsonFormaterDelim = "---\n"
-	keyLayout         = "layout"
-	keyContent        = "content"
-	tplSuffix         = ".html"
+	jsonFormaterDelim       = "---\n"
+	keyLayout               = "layout"
+	keyContent              = "content"
+	tplSuffix               = ".html"
+	defaultFallbackTemplate = `<html><head><title>{{title}}</title></head><body>{{content|safe}}</body><!--fallback render--></html>`
 )
 
 // for gomarkdown
@@ -207,7 +209,17 @@ func (m *ContentManager) RenderContent(name string, f http.File, ctx map[string]
 	content.ctx[keyContent] = string(content.htmlData)
 	t, err := m.Sets.FromFile(layout)
 	if err != nil {
-		return nil, err
+		if !strings.Contains(err.Error(), "unable to resolve template") {
+			return nil, err
+		}
+		fallback := defaultFallbackTemplate
+		if m.FallbackTemplate != "" {
+			fallback = m.FallbackTemplate
+		}
+		t, err = m.Sets.FromString(fallback)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return t.ExecuteBytes(content.ctx)
